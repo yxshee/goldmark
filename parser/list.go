@@ -189,7 +189,17 @@ func (b *listParser) Continue(node ast.Node, reader text.Reader, pc Context) Sta
 	lastIsEmpty := !node.LastChild().HasChildren()
 	indent, _ := util.IndentWidth(line, reader.LineOffset())
 
-	if indent < offset || lastIsEmpty {
+	// An empty item that was not followed by blank lines still owns the
+	// lines indented to its offset, so a list marker there starts a nested
+	// list rather than a sibling, like
+	//
+	// -
+	//    1. a
+	//
+	// -> 1 list with 1 item holding an ordered list
+	emptyWithBlankLines := lastIsEmpty && pc.Get(emptyListItemWithBlankLinesKey) != nil
+
+	if indent < offset || emptyWithBlankLines {
 		if indent < 4 {
 			match, typ := parseListItem(line)
 			if typ != notList && match[1]-offset < 4 {
