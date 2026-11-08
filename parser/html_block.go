@@ -152,7 +152,7 @@ func scanHTMLBlockOpen6(line []byte) (tagName []byte, ok bool) {
 	i++
 	if i < len(line) && line[i] == '/' {
 		i++
-		for i < len(line) && line[i] == ' ' {
+		for i < len(line) && isSpaceOrTab(line[i]) {
 			i++
 		}
 	}
@@ -163,11 +163,17 @@ func scanHTMLBlockOpen6(line []byte) (tagName []byte, ok bool) {
 	}
 	if end < len(line)-1 {
 		c := line[end]
-		if c != ' ' && c != '>' && (c != '/' || end+1 >= len(line) || line[end+1] != '>') {
+		if !isSpaceOrTab(c) && c != '>' && (c != '/' || end+1 >= len(line) || line[end+1] != '>') {
 			return nil, false
 		}
 	}
 	return line[start:end], true
+}
+
+// isSpaceOrTab reports whether c is a space or a tab, the white space that may
+// appear inside an HTML block open tag and after it on the same line.
+func isSpaceOrTab(c byte) bool {
+	return c == ' ' || c == '\t'
 }
 
 func scanHTMLBlockOpen7(line []byte) (tagName []byte, isCloseTag, hasAttr, ok bool) {
@@ -179,7 +185,7 @@ func scanHTMLBlockOpen7(line []byte) (tagName []byte, isCloseTag, hasAttr, ok bo
 	if i < len(line) && line[i] == '/' {
 		isCloseTag = true
 		i++
-		for i < len(line) && line[i] == ' ' {
+		for i < len(line) && isSpaceOrTab(line[i]) {
 			i++
 		}
 	}
@@ -190,7 +196,7 @@ func scanHTMLBlockOpen7(line []byte) (tagName []byte, isCloseTag, hasAttr, ok bo
 	}
 	tagName = line[start:end]
 	end, hasAttr = scanHTMLAttributesBytes(line, end)
-	for end < len(line) && line[end] == ' ' {
+	for end < len(line) && isSpaceOrTab(line[end]) {
 		end++
 	}
 	if end >= len(line) {
@@ -207,7 +213,7 @@ func scanHTMLBlockOpen7(line []byte) (tagName []byte, isCloseTag, hasAttr, ok bo
 	default:
 		return tagName, isCloseTag, hasAttr, false
 	}
-	for end < len(line) && line[end] == ' ' {
+	for end < len(line) && isSpaceOrTab(line[end]) {
 		end++
 	}
 	if end < len(line) && line[end] == '\r' && end+1 < len(line) && line[end+1] == '\n' {

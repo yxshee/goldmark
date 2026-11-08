@@ -1214,3 +1214,21 @@ Text with <!doctype html> inline.
 <p><textarea/>
 <em>d</em></p>
 //= = = = = = = = = = = = = = = = = = = = = = = =//
+
+87: tabs around an HTML block open tag
+//- - - - - - - - -//
+<span>	
+<a href="x">	
+<div	class="a">
+foo
+</div>	
+
+para
+//- - - - - - - - -//
+<span>	
+<a href="x">	
+<div	class="a">
+foo
+</div>	
+<p>para</p>
+//= = = = = = = = = = = = = = = = = = = = = = = =//
