@@ -1214,3 +1214,19 @@ Text with <!doctype html> inline.
 <p><textarea/>
 <em>d</em></p>
 //= = = = = = = = = = = = = = = = = = = = = = = =//
+
+87: a tab ends the language in a code block info string
+//- - - - - - - - -//
+```js	*a*
+x
+```
+
+~~~ruby	startline=3
+y
+~~~
+//- - - - - - - - -//
+<pre><code class="language-js">x
+</code></pre>
+<pre><code class="language-ruby">y
+</code></pre>
+//= = = = = = = = = = = = = = = = = = = = = = = =//

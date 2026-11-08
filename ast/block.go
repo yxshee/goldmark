@@ -346,8 +346,12 @@ func (n *CodeBlock) Language(source []byte) (string, bool) {
 		return "", false
 	}
 	b := util.StringToReadOnlyBytes(v)
-	language, _, _ := bytes.Cut(b, []byte{' '})
-	return util.BytesToReadOnlyString(language), true
+	// The language is the first word of the info string, which ends at a
+	// space or a tab.
+	if i := bytes.IndexAny(b, " \t"); i >= 0 {
+		b = b[:i]
+	}
+	return util.BytesToReadOnlyString(b), true
 }
 
 // Dump implements Node.Dump.
